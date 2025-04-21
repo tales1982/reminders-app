@@ -17,11 +17,19 @@ const RegisterPage = () => {
   const [surname, setSurname] = useState('');
   const [city, setCity] = useState('');
   const [email, setEmail] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError('As senhas não coincidem');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:4000/api/auth/register', {
         name,
@@ -29,6 +37,7 @@ const RegisterPage = () => {
         city,
         email,
         password,
+        whatsapp,
       });
       console.log(response.data);
       window.location.href = '/login';
@@ -60,8 +69,22 @@ const RegisterPage = () => {
             <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </Label>
           <Label>
+            Número de WhatsApp:
+            <Input
+              type="tel"
+              placeholder="ex: 352661234567"
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              required
+            />
+          </Label>
+          <Label>
             Senha:
             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </Label>
+          <Label>
+            Confirmar Senha:
+            <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
           </Label>
           <Button type="submit">Registrar</Button>
           {error && <ErrorText>{error}</ErrorText>}

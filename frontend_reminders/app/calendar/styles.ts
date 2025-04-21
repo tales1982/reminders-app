@@ -1,9 +1,22 @@
-// app/[locale]/calendar/styles.ts
 'use client';
-import styled from 'styled-components';
-import { Calendar as BigCalendar, CalendarProps } from 'react-big-calendar';
-import type { Event as CalendarEvent } from "@/types/calendar";
 
+import styled from 'styled-components';
+
+// Apenas a div externa ao BigCalendar será estilizada
+export const CalendarWrapper = styled.div`
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+  .rbc-event {
+    background-color: #0070f3;
+    color: white;
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+`;
 
 export const Container = styled.div`
   max-width: 1000px;
@@ -25,24 +38,6 @@ export const Header = styled.div`
   }
 `;
 
-export const StyledCalendar = styled(
-  BigCalendar as React.ComponentType<CalendarProps<CalendarEvent>>
-)`
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-
-  .rbc-event {
-    background-color: #0070f3;
-    color: white;
-    border-radius: 4px;
-    padding: 2px 6px;
-  }
-`;
-
-
 export const Button = styled.button`
   padding: 0.6rem 1rem;
   background-color: #0070f3;
@@ -51,7 +46,6 @@ export const Button = styled.button`
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  //transition: background 0.2s;
 
   &:hover {
     background-color: #0059c1;
