@@ -1,7 +1,9 @@
-'use client';
-import React from 'react';
-import styled from 'styled-components';
-import { Event } from '../types/calendar';
+"use client";
+import React from "react";
+import styled from "styled-components";
+import { Event } from "../types/calendar";
+import moment from 'moment';
+
 
 type Props = {
   event: Event;
@@ -60,8 +62,10 @@ export const EventModal = ({ event, onClose, onEdit, onDelete }: Props) => {
     <Overlay onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <Title>{event.title}</Title>
-        <p><strong>Data:</strong> {new Date(event.start).toLocaleString()}</p>
-
+        <p>
+          <strong>Data:</strong>{" "}
+          {moment(event.start).format("DD/MM/YYYY HH:mm")}
+        </p>
         <ButtonGroup>
           <Button onClick={onEdit}>✏️ Modifier</Button>
           <Button onClick={onDelete}>🗑️ Supprimer</Button>
