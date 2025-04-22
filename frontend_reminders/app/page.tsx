@@ -18,19 +18,19 @@ export default function Home() {
       <div className="home-card">
         <h1 className="home-title">🧠 Reminders App</h1>
         <p className="home-subtitle">
-          Organize seus eventos com lembretes por <strong>Email</strong> e <strong>WhatsApp</strong>.
+          Organisez vos événements avec des rappels pour <strong>Email</strong> e <strong>WhatsApp</strong>.
         </p>
 
         {isLoggedIn ? (
           <>
-            <p className="home-status logged">✅ Você está logado!</p>
-            <button className="home-button primary" onClick={() => router.push("/calendar")}>Ir para o Calendário 📅</button>
+            <p className="home-status logged">✅ Vous êtes connecté!</p>
+            <button className="home-button primary" onClick={() => router.push("/calendar")}>Aller au calendrier 📅</button>
           </>
         ) : (
           <div className="home-actions">
-            <p className="home-status not-logged">🔐 Você ainda não está logado.</p>
-            <button className="home-button primary" onClick={() => router.push("/login")}>Login</button>
-            <button className="home-button secondary" onClick={() => router.push("/register")}>Criar Conta</button>
+            <p className="home-status not-logged">🔐 Vous n'êtes pas encore connecté.</p>
+            <button className="home-button primary" onClick={() => router.push("/login")}>Se connecter</button>
+            <button className="home-button secondary" onClick={() => router.push("/register")}>Créer un compte</button>
           </div>
         )}
       </div>
