@@ -8,6 +8,9 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Event as CalendarEvent } from "../../types/calendar";
 import { EventModal } from "../../components/Modal";
 import type { View } from "react-big-calendar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 import {
   CalendarWrapper,
@@ -21,6 +24,7 @@ import {
 } from "./styles";
 
 const localizer = momentLocalizer(moment);
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
@@ -30,10 +34,10 @@ const CalendarPage = () => {
   }, []);
 
   const [currentView, setCurrentView] = useState<View>("month");
-
   const [hasMounted, setHasMounted] = useState(false);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [showCreateEventForm, setShowCreateEventForm] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null
@@ -50,24 +54,32 @@ const CalendarPage = () => {
     setHasMounted(true);
 
     const token = localStorage.getItem("token");
+    console.log("Token:", token);
     if (!token) return;
 
-    fetch("http://localhost:4000/api/events", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
       .then((data) => {
-        const formatted = data.map((event: any) => ({
-          id: event.id,
-          title: event.title,
-          start: new Date(event.datetime),
-          end: new Date(event.datetime),
-          notifyBefore: event.notifyBefore,
-          notifyEmail: event.notifyEmail,
-          notifyWhats: event.notifyWhats,
-        }));
+        const formatted = data.map((event: any) => {
+          const date = new Date(event.datetime);
+          const localDate = new Date(
+            date.getTime() + date.getTimezoneOffset() * 60000
+          );
+          return {
+            id: event.id,
+            title: event.title,
+            start: localDate,
+            end: localDate,
+            notifyBefore: event.notifyBefore,
+            notifyEmail: event.notifyEmail,
+            notifyWhats: event.notifyWhats,
+          };
+        });
+
         setEvents(formatted);
       })
       .catch((err) => {
@@ -86,19 +98,20 @@ const CalendarPage = () => {
       alert("⛔ Não é possível adicionar eventos no passado.");
       return;
     }
-    console.log(
-      "Evento no passado que nao pode ser armazenado " + editingEvent
-    );
 
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:4000/api/events", {
+    const response = await fetch(`${apiUrl}/api/events`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newEvent),
+      body: JSON.stringify({
+        ...newEvent,
+        datetime: new Date(newEvent.datetime).toISOString(), // garante envio como ISO UTC
+      }),
     });
+
     const data = await response.json();
     setEvents([
       ...events,
@@ -123,7 +136,7 @@ const CalendarPage = () => {
     if (!selectedEvent?.id) return;
 
     const token = localStorage.getItem("token");
-    fetch(`http://localhost:4000/api/events/${selectedEvent.id}`, {
+    fetch(`${apiUrl}/api/events/${selectedEvent.id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -159,132 +172,142 @@ const CalendarPage = () => {
   };
 
   return (
-<Container>
-  <Header>
-    <h1>📅 Mon Calendrier</h1>
-    <Button onClick={() => setShowCreateEventForm(!showCreateEventForm)}>
-      {showCreateEventForm ? "Fermer" : "Créer un Événement"}
-    </Button>
-  </Header>
-
-  {showCreateEventForm && (
-    <FormWrapper onSubmit={handleCreateEvent}>
-      <Label>
-        Titre de l&apos;Événement :
-        <Input
-          type="text"
-          value={newEvent.title}
-          onChange={(e) =>
-            setNewEvent({ ...newEvent, title: e.target.value })
-          }
-          required
-        />
-      </Label>
-
-      <Label>
-        Date et Heure :
-        <Input
-          type="datetime-local"
-          value={newEvent.datetime}
-          onChange={(e) =>
-            setNewEvent({ ...newEvent, datetime: e.target.value })
-          }
-          required
-        />
-      </Label>
-
-      <Label>
-        Alerte avant (minutes) :
-        <Input
-          type="number"
-          min={1}
-          value={newEvent.notifyBefore}
-          onChange={(e) =>
-            setNewEvent({
-              ...newEvent,
-              notifyBefore: Number(e.target.value),
-            })
-          }
-          required
-        />
-      </Label>
-
-      <Label>
-        Notifications :
-        <div style={{ display: "flex", gap: "1rem", marginTop: "0.5rem" }}>
-          <label>
-            <input
-              type="checkbox"
-              checked={newEvent.notifyEmail}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, notifyEmail: e.target.checked })
-              }
-            />
-            Email
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={newEvent.notifyWhats}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, notifyWhats: e.target.checked })
-              }
-            />
-            WhatsApp
-          </label>
-        </div>
-      </Label>
-
-      <FormButtonGroup>
-        <Button type="submit">Enregistrer</Button>
-        <Button type="button" onClick={() => setShowCreateEventForm(false)}>
-          Annuler
+    <Container>
+      <Header>
+        <h1>📅 Mon Calendrier</h1>
+        <Button onClick={() => setShowCreateEventForm(!showCreateEventForm)}>
+          {showCreateEventForm ? "Fermer" : "Créer un Événement"}
         </Button>
-      </FormButtonGroup>
-    </FormWrapper>
-  )}
+      </Header>
 
-  {currentDate && (
-    <CalendarWrapper>
-      <Calendar
-        localizer={localizer}
-        events={events}
-        date={currentDate}
-        onNavigate={(date) => setCurrentDate(date)}
-        view={currentView}
-        onView={(view) => setCurrentView(view)}
-        views={["month", "week", "day"]}
-        onSelectEvent={(event) => setSelectedEvent(event)}
-        style={{ height: 600 }}
-        components={{ event: CustomEvent }}
-        messages={{
-          today: "Aujourd'hui",
-          previous: "Précédent",
-          next: "Suivant",
-          month: "Mois",
-          week: "Semaine",
-          day: "Jour",
-          agenda: "Agenda",
-          date: "Date",
-          time: "Heure",
-          event: "Événement",
-          noEventsInRange: "Aucun événement dans cette période.",
-        }}
-      />
-    </CalendarWrapper>
-  )}
+      {showCreateEventForm && (
+        <FormWrapper onSubmit={handleCreateEvent}>
+          <Label>
+            Titre de l&apos;Événement :
+            <Input
+              type="text"
+              value={newEvent.title}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, title: e.target.value })
+              }
+              required
+            />
+          </Label>
 
-  {selectedEvent && (
-    <EventModal
-      event={selectedEvent}
-      isOpen={!!selectedEvent}
-      onClose={() => setSelectedEvent(null)}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
+          <Label>
+  Date et Heure :
+  <div style={{ marginTop: "0.5rem" }}>
+    <DatePicker
+      selected={newEvent.datetime ? new Date(newEvent.datetime) : null}
+      onChange={(date) =>
+        setNewEvent({
+          ...newEvent,
+          datetime: date ? date.toISOString() : "",
+        })
+      }
+      dateFormat="dd/MM/yyyy HH:mm"
+      showTimeSelect
+      timeFormat="HH:mm"
+      timeIntervals={15}
+      timeCaption="Heure"
+      placeholderText="Sélectionnez la date et l'heure"
+      className="custom-datepicker" // você pode adicionar estilos aqui
     />
-  )}
-</Container>
+  </div>
+</Label>
 
+
+          <Label>
+            Alerte avant (minutes) :
+            <Input
+              type="number"
+              min={1}
+              value={newEvent.notifyBefore}
+              onChange={(e) =>
+                setNewEvent({
+                  ...newEvent,
+                  notifyBefore: Number(e.target.value),
+                })
+              }
+              required
+            />
+          </Label>
+
+          <Label>
+            Notifications :
+            <div style={{ display: "flex", gap: "1rem", marginTop: "0.5rem" }}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={newEvent.notifyEmail}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, notifyEmail: e.target.checked })
+                  }
+                />
+                Email
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={newEvent.notifyWhats}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, notifyWhats: e.target.checked })
+                  }
+                />
+                WhatsApp
+              </label>
+            </div>
+          </Label>
+
+          <FormButtonGroup>
+            <Button type="submit">Enregistrer</Button>
+            <Button type="button" onClick={() => setShowCreateEventForm(false)}>
+              Annuler
+            </Button>
+          </FormButtonGroup>
+        </FormWrapper>
+      )}
+
+      {currentDate && (
+        <CalendarWrapper>
+          <Calendar
+            localizer={localizer}
+            events={events}
+            date={currentDate}
+            onNavigate={(date) => setCurrentDate(date)}
+            view={currentView}
+            onView={(view) => setCurrentView(view)}
+            views={["month", "week", "day"]}
+            onSelectEvent={(event) => setSelectedEvent(event)}
+            style={{ height: 600 }}
+            components={{ event: CustomEvent }}
+            messages={{
+              today: "Aujourd'hui",
+              previous: "Précédent",
+              next: "Suivant",
+              month: "Mois",
+              week: "Semaine",
+              day: "Jour",
+              agenda: "Agenda",
+              date: "Date",
+              time: "Heure",
+              event: "Événement",
+              noEventsInRange: "Aucun événement dans cette période.",
+            }}
+          />
+        </CalendarWrapper>
+      )}
+
+      {selectedEvent && (
+        <EventModal
+          event={selectedEvent}
+          isOpen={!!selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
+    </Container>
   );
 };
 

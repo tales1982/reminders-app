@@ -12,6 +12,8 @@ import {
   ErrorText,
 } from './styles';
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 const RegisterPage = () => {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -31,7 +33,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:4000/api/auth/register', {
+      const response = await axios.post(`${apiUrl}/api/auth/register`, {
         name,
         surname,
         city,

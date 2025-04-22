@@ -13,6 +13,8 @@ import {
   ErrorText,
 } from './styles';
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +23,7 @@ const LoginPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/auth/login', {
+      const response = await axios.post(`${apiUrl}/api/auth/login`, {
         email,
         password,
       });
