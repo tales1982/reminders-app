@@ -81,6 +81,7 @@ const CalendarPage = () => {
       alert("⛔ Não é possível adicionar eventos no passado.");
       return;
     }
+    console.log("Evento no passado que nao pode ser armazenado " + editingEvent);
 
     const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:4000/api/events", {
