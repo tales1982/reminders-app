@@ -29,7 +29,7 @@ const LoginPage = () => {
       localStorage.setItem('token', response.data.token);
       window.location.href = '/calendar';
     } catch (error) {
-      setError('Erro ao fazer login');
+      setError("Erreur lors de la connexion");
       console.error(error);
     }
   };
@@ -37,10 +37,10 @@ const LoginPage = () => {
   return (
     <Container>
       <FormWrapper>
-        <Title>Login</Title>
+        <Title>Connexion</Title>
         <StyledForm onSubmit={handleSubmit}>
           <Label>
-            E-mail:
+            Adresse e-mail :
             <Input
               type="email"
               value={email}
@@ -49,7 +49,7 @@ const LoginPage = () => {
             />
           </Label>
           <Label>
-            Senha:
+            Mot de passe :
             <Input
               type="password"
               value={password}
@@ -57,7 +57,7 @@ const LoginPage = () => {
               required
             />
           </Label>
-          <Button type="submit">Fazer Login</Button>
+          <Button type="submit">Se connecter</Button>
           {error && <ErrorText>{error}</ErrorText>}
         </StyledForm>
       </FormWrapper>

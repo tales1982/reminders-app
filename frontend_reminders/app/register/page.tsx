@@ -26,7 +26,7 @@ const RegisterPage = () => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      setError('As senhas não coincidem');
+      setError("Les mots de passe ne correspondent pas");
       return;
     }
 
@@ -42,7 +42,7 @@ const RegisterPage = () => {
       console.log(response.data);
       window.location.href = '/login';
     } catch (error) {
-      setError('Erro ao registrar usuário');
+      setError("Erreur lors de l'inscription");
       console.error(error);
     }
   };
@@ -50,43 +50,43 @@ const RegisterPage = () => {
   return (
     <Container>
       <FormWrapper>
-        <Title>Crie sua conta</Title>
+        <Title>Créer votre compte</Title>
         <StyledForm onSubmit={handleSubmit}>
           <Label>
-            Nome:
+            Prénom :
             <Input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
           </Label>
           <Label>
-            Sobrenome:
+            Nom :
             <Input type="text" value={surname} onChange={(e) => setSurname(e.target.value)} required />
           </Label>
           <Label>
-            Cidade:
+            Ville :
             <Input type="text" value={city} onChange={(e) => setCity(e.target.value)} required />
           </Label>
           <Label>
-            E-mail:
+            Adresse e-mail :
             <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </Label>
           <Label>
-            Número de WhatsApp:
+            Numéro WhatsApp :
             <Input
               type="tel"
-              placeholder="ex: 352661234567"
+              placeholder="ex : 352661234567"
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
               required
             />
           </Label>
           <Label>
-            Senha:
+            Mot de passe :
             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </Label>
           <Label>
-            Confirmar Senha:
+            Confirmer le mot de passe :
             <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
           </Label>
-          <Button type="submit">Registrar</Button>
+          <Button type="submit">S&apos;inscrire</Button>
           {error && <ErrorText>{error}</ErrorText>}
         </StyledForm>
       </FormWrapper>

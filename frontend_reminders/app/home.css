@@ -1,0 +1,134 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --bg: linear-gradient(to bottom right, #f0f4ff, #e0e7ff);
+  --text-dark: #1e293b;
+  --text-light: #64748b;
+  --white: #ffffff;
+  --success: #22c55e;
+  --danger: #ef4444;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  background: var(--bg);
+}
+
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+  background: var(--bg);
+}
+
+.home-card {
+  background: var(--white);
+  padding: 3rem 2rem;
+  border-radius: 2rem;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  width: 100%;
+  animation: fadeIn 0.6s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.home-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+}
+
+.home-status {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.logged {
+  color: var(--success);
+}
+
+.not-logged {
+  color: var(--danger);
+}
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.home-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.home-button.primary {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.home-button.primary:hover {
+  background: var(--primary-hover);
+}
+
+.home-button.secondary {
+  background: #f3f4f6;
+  color: var(--text-dark);
+}
+
+.home-button.secondary:hover {
+    background: #e5e7eb;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsivo para telas menores */
+  @media (max-width: 480px) {
+    .home-card {
+      padding: 2rem 1.5rem;
+    }
+  
+    .home-title {
+      font-size: 2rem;
+    }
+  
+    .home-subtitle {
+      font-size: 1rem;
+    }
+  
+    .home-button {
+      font-size: 0.95rem;
+      padding: 0.6rem 1.2rem;
+    }
+  }
+  

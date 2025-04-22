@@ -1,4 +1,3 @@
-// app/[locale]/login/styles.ts
 'use client';
 import styled from 'styled-components';
 
@@ -7,7 +6,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #c9d6ff, #e2e2e2);
+  background: linear-gradient(135deg, #c9d6ff, #f2f2f2);
   padding: 2rem;
 `;
 
@@ -24,7 +23,7 @@ export const Title = styled.h1`
   margin-bottom: 2rem;
   text-align: center;
   font-size: 1.8rem;
-  color: #333;
+  color: #2c3e50;
 `;
 
 export const StyledForm = styled.form`
@@ -35,7 +34,7 @@ export const StyledForm = styled.form`
 export const Label = styled.label`
   margin-bottom: 1rem;
   font-size: 0.95rem;
-  color: #333;
+  color: #2c3e50;
   display: flex;
   flex-direction: column;
 `;
@@ -44,13 +43,14 @@ export const Input = styled.input`
   padding: 0.6rem;
   font-size: 1rem;
   margin-top: 0.4rem;
-  border: 1px solid #ccc;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s ease;
 
   &:focus {
-    border-color: #0070f3;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.2);
   }
 `;
 
@@ -58,16 +58,22 @@ export const Button = styled.button`
   padding: 0.8rem;
   font-size: 1rem;
   font-weight: bold;
-  background-color: #0070f3;
+  background-color: #4f46e5;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   margin-top: 1.5rem;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    background-color: #0059c1;
+    background-color:rgb(80, 4, 99);
+    box-shadow: 0 4px 14px rgba(0, 89, 193, 0.4);
+  }
+
+  &:disabled {
+    background-color: #a0c4ff;
+    cursor: not-allowed;
   }
 `;
 

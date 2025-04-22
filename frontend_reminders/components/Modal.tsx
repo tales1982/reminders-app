@@ -63,9 +63,9 @@ export const EventModal = ({ event, onClose, onEdit, onDelete }: Props) => {
         <p><strong>Data:</strong> {new Date(event.start).toLocaleString()}</p>
 
         <ButtonGroup>
-          <Button onClick={onEdit}>✏️ Editar</Button>
-          <Button onClick={onDelete}>🗑️ Excluir</Button>
-          <Button onClick={onClose}>Fechar</Button>
+          <Button onClick={onEdit}>✏️ Modifier</Button>
+          <Button onClick={onDelete}>🗑️ Supprimer</Button>
+          <Button onClick={onClose}>Fermer</Button>
         </ButtonGroup>
       </ModalContainer>
     </Overlay>

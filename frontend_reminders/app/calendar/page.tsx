@@ -23,7 +23,12 @@ import {
 const localizer = momentLocalizer(moment);
 
 const CalendarPage = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setCurrentDate(new Date());
+  }, []);
+
   const [currentView, setCurrentView] = useState<View>("month");
 
   const [hasMounted, setHasMounted] = useState(false);
@@ -81,7 +86,9 @@ const CalendarPage = () => {
       alert("⛔ Não é possível adicionar eventos no passado.");
       return;
     }
-    console.log("Evento no passado que nao pode ser armazenado " + editingEvent);
+    console.log(
+      "Evento no passado que nao pode ser armazenado " + editingEvent
+    );
 
     const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:4000/api/events", {
@@ -136,130 +143,148 @@ const CalendarPage = () => {
     }
   };
 
+  const CustomEvent = ({ event }: { event: CalendarEvent }) => {
+    const isPast = new Date(event.end) < new Date();
+
+    return (
+      <span style={{ textDecoration: isPast ? "line-through" : "none" }}>
+        {event.title}{" "}
+        {isPast && (
+          <span style={{ fontSize: "0.8rem", color: "#4caf50" }}>
+            ✅ já aconteceu
+          </span>
+        )}
+      </span>
+    );
+  };
 
   return (
-    <Container>
-      <Header>
-        <h1>📅 Meu Calendário</h1>
-        <Button onClick={() => setShowCreateEventForm(!showCreateEventForm)}>
-          {showCreateEventForm ? "Fechar" : "Criar Evento"}
+<Container>
+  <Header>
+    <h1>📅 Mon Calendrier</h1>
+    <Button onClick={() => setShowCreateEventForm(!showCreateEventForm)}>
+      {showCreateEventForm ? "Fermer" : "Créer un Événement"}
+    </Button>
+  </Header>
+
+  {showCreateEventForm && (
+    <FormWrapper onSubmit={handleCreateEvent}>
+      <Label>
+        Titre de l&apos;Événement :
+        <Input
+          type="text"
+          value={newEvent.title}
+          onChange={(e) =>
+            setNewEvent({ ...newEvent, title: e.target.value })
+          }
+          required
+        />
+      </Label>
+
+      <Label>
+        Date et Heure :
+        <Input
+          type="datetime-local"
+          value={newEvent.datetime}
+          onChange={(e) =>
+            setNewEvent({ ...newEvent, datetime: e.target.value })
+          }
+          required
+        />
+      </Label>
+
+      <Label>
+        Alerte avant (minutes) :
+        <Input
+          type="number"
+          min={1}
+          value={newEvent.notifyBefore}
+          onChange={(e) =>
+            setNewEvent({
+              ...newEvent,
+              notifyBefore: Number(e.target.value),
+            })
+          }
+          required
+        />
+      </Label>
+
+      <Label>
+        Notifications :
+        <div style={{ display: "flex", gap: "1rem", marginTop: "0.5rem" }}>
+          <label>
+            <input
+              type="checkbox"
+              checked={newEvent.notifyEmail}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, notifyEmail: e.target.checked })
+              }
+            />
+            Email
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={newEvent.notifyWhats}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, notifyWhats: e.target.checked })
+              }
+            />
+            WhatsApp
+          </label>
+        </div>
+      </Label>
+
+      <FormButtonGroup>
+        <Button type="submit">Enregistrer</Button>
+        <Button type="button" onClick={() => setShowCreateEventForm(false)}>
+          Annuler
         </Button>
-      </Header>
+      </FormButtonGroup>
+    </FormWrapper>
+  )}
 
-      {showCreateEventForm && (
-        <FormWrapper onSubmit={handleCreateEvent}>
-          <Label>
-            Título do Evento:
-            <Input
-              type="text"
-              value={newEvent.title}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, title: e.target.value })
-              }
-              required
-            />
-          </Label>
+  {currentDate && (
+    <CalendarWrapper>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        date={currentDate}
+        onNavigate={(date) => setCurrentDate(date)}
+        view={currentView}
+        onView={(view) => setCurrentView(view)}
+        views={["month", "week", "day"]}
+        onSelectEvent={(event) => setSelectedEvent(event)}
+        style={{ height: 600 }}
+        components={{ event: CustomEvent }}
+        messages={{
+          today: "Aujourd'hui",
+          previous: "Précédent",
+          next: "Suivant",
+          month: "Mois",
+          week: "Semaine",
+          day: "Jour",
+          agenda: "Agenda",
+          date: "Date",
+          time: "Heure",
+          event: "Événement",
+          noEventsInRange: "Aucun événement dans cette période.",
+        }}
+      />
+    </CalendarWrapper>
+  )}
 
-          <Label>
-            Data e Hora:
-            <Input
-              type="datetime-local"
-              value={newEvent.datetime}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, datetime: e.target.value })
-              }
-              required
-            />
-          </Label>
+  {selectedEvent && (
+    <EventModal
+      event={selectedEvent}
+      isOpen={!!selectedEvent}
+      onClose={() => setSelectedEvent(null)}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+    />
+  )}
+</Container>
 
-          <Label>
-            Notificar antes (minutos):
-            <Input
-              type="number"
-              min={1}
-              value={newEvent.notifyBefore}
-              onChange={(e) =>
-                setNewEvent({
-                  ...newEvent,
-                  notifyBefore: Number(e.target.value),
-                })
-              }
-              required
-            />
-          </Label>
-
-          <Label>
-            Notificar por:
-            <div style={{ display: "flex", gap: "1rem", marginTop: "0.5rem" }}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={newEvent.notifyEmail}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, notifyEmail: e.target.checked })
-                  }
-                />
-                E-mail
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={newEvent.notifyWhats}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, notifyWhats: e.target.checked })
-                  }
-                />
-                WhatsApp
-              </label>
-            </div>
-          </Label>
-
-          <FormButtonGroup>
-            <Button type="submit">Salvar</Button>
-            <Button type="button" onClick={() => setShowCreateEventForm(false)}>
-              Cancelar
-            </Button>
-          </FormButtonGroup>
-        </FormWrapper>
-      )}
-
-      <CalendarWrapper>
-        <Calendar
-          localizer={localizer}
-          events={events}
-          date={currentDate}
-          onNavigate={(date) => setCurrentDate(date)}
-          view={currentView}
-          onView={(view) => setCurrentView(view)}
-          views={["month", "week", "day"]}
-          onSelectEvent={(event) => setSelectedEvent(event)} // ✅ Aqui!
-          style={{ height: 600 }}
-          messages={{
-            today: "Hoje",
-            previous: "Anterior",
-            next: "Próximo",
-            month: "Mês",
-            week: "Semana",
-            day: "Dia",
-            agenda: "Agenda",
-            date: "Data",
-            time: "Hora",
-            event: "Evento",
-            noEventsInRange: "Sem eventos neste período.",
-          }}
-        />
-      </CalendarWrapper>
-
-      {selectedEvent && (
-        <EventModal
-          event={selectedEvent}
-          isOpen={!!selectedEvent}
-          onClose={() => setSelectedEvent(null)}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      )}
-    </Container>
   );
 };
 

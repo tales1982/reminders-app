@@ -1,19 +1,26 @@
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config();
 
-export async function sendWhatsApp(message: string, phone: string) {
-  try {
-    const encodedMessage = encodeURIComponent(message);
-    const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodedMessage}&apikey=${process.env.WHATSAPP_API_KEY}`;
+// ✅ caminho absoluto para o .env
+dotenv.config({ path: __dirname + "/../../.env" });
 
-    const res = await axios.get(url);
-    if (res.data.includes("Message Sent")) {
-      console.log(`✅ WhatsApp enviado para ${phone}`);
-    } else {
-      console.warn(`⚠️ Resposta inesperada do CallMeBot: ${res.data}`);
-    }
-  } catch (err) {
-    console.error("❌ Erro ao enviar WhatsApp:", err);
+export const sendWhatsApp = async (message: string, phone: string) => {
+  const apiKey = process.env.WHATSAPP_API_KEY;
+  if (!apiKey) {
+    console.error("❌ API Key do CallMeBot não encontrada.");
+    return;
   }
-}
+
+  // ✅ Adiciona "+" se não estiver presente
+  const formattedPhone = phone.startsWith("+") ? phone : `+${phone}`;
+
+  try {
+    const url = `https://api.callmebot.com/whatsapp.php?phone=${formattedPhone}&text=${encodeURIComponent(
+      message
+    )}&apikey=${apiKey}`;
+    await axios.get(url);
+    console.log(`✅ Mensagem enviada via WhatsApp para ${formattedPhone}`);
+  } catch (error: any) {
+    console.error("❌ Erro ao enviar WhatsApp:", error.response?.data || error);
+  }
+};
