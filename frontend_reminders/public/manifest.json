@@ -1,0 +1,23 @@
+{
+    "name": "Reminders App",
+    "short_name": "Reminders",
+    "description": "Organize seus lembretes com alertas por e-mail e WhatsApp.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0070f3",
+    "orientation": "portrait",
+    "icons": [
+      {
+        "src": "/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
