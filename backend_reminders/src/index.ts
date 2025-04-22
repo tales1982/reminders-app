@@ -4,13 +4,15 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import eventRoutes from './routes/event.routes';
 
-
 dotenv.config();
 
-const app = express(); // ✅ Agora sim, app está declarado
+const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*', // ✅ mais seguro
+}));
+
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
@@ -21,6 +23,7 @@ app.get('/', (req, res) => {
 });
 
 import './jobs/eventReminderJob';
+
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
