@@ -63,7 +63,7 @@ const RegisterPage = () => {
 
       console.log(response.data);
       // Alerta para ativar número no CallMeBot
-      alert("Inscription réussie ! Pour activer votre numéro WhatsApp, veuillez envoyer un message contenant le mot 'start' à CallMeBot au numéro suivant : +34 603 21 25 23 via WhatsApp.");
+      alert("Inscription réussie ! Pour activer votre numéro WhatsApp, veuillez envoyer un message contenant le mot '/start' à CallMeBot au numéro suivant : +34 684 73 40 44 via WhatsApp.");
       window.location.href = '/login';
     } catch (error) {
       setError("Erreur lors de l'inscription.");
