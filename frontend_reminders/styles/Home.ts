@@ -91,7 +91,7 @@ export const Button = styled.button<{ variant?: "primary" | "secondary" }>`
 
   &:hover {
     background: ${(props) =>
-      props.variant === "primary" ? "#4338ca" : "#e5e7eb"};
+      props.variant === "primary" ? "rgb(17, 114, 241)" : "#e5e7eb"};
   }
 
   @media (max-width: 480px) {

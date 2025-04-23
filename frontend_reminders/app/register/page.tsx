@@ -1,5 +1,7 @@
 "use client";
 import { useState } from 'react';
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const isValidPhone = (phone: string) => /^\+?[0-9]{10,15}$/.test(phone);
 import axios from 'axios';
 import {
   Container,
@@ -27,12 +29,28 @@ const RegisterPage = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas");
+  
+    // Verifica campos básicos
+    if (!name || !surname || !city || !email || !whatsapp || !password || !confirmPassword) {
+      setError("Tous les champs sont obligatoires.");
       return;
     }
-
+  
+    if (!isValidEmail(email)) {
+      setError("Veuillez entrer une adresse e-mail valide.");
+      return;
+    }
+  
+    if (!isValidPhone(whatsapp)) {
+      setError("Veuillez entrer un numéro WhatsApp valide (ex: +352661234567).");
+      return;
+    }
+  
+    if (password !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+  
     try {
       const response = await axios.post(`${apiUrl}/api/auth/register`, {
         name,
@@ -45,10 +63,11 @@ const RegisterPage = () => {
       console.log(response.data);
       window.location.href = '/login';
     } catch (error) {
-      setError("Erreur lors de l'inscription");
+      setError("Erreur lors de l'inscription.");
       console.error(error);
     }
   };
+  
 
   return (
     <Container>

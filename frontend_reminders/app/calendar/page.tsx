@@ -89,6 +89,12 @@ const CalendarPage = () => {
 
   if (!hasMounted) return null;
 
+  const handleLogout = () => {
+    localStorage.clear(); // Limpa tudo
+    window.location.href = "/login"; // Redireciona
+  };
+  
+
   const handleCreateEvent = async (event: React.FormEvent) => {
     event.preventDefault();
     const selectedDate = new Date(newEvent.datetime);
@@ -111,6 +117,7 @@ const CalendarPage = () => {
         datetime: new Date(newEvent.datetime).toISOString(), // garante envio como ISO UTC
       }),
     });
+
 
     const data = await response.json();
     setEvents([
@@ -175,9 +182,12 @@ const CalendarPage = () => {
     <Container>
       <Header>
         <h1>📅 Mon Calendrier</h1>
-        <Button onClick={() => setShowCreateEventForm(!showCreateEventForm)}>
-          {showCreateEventForm ? "Fermer" : "Créer un Événement"}
-        </Button>
+        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+          <Button onClick={() => setShowCreateEventForm(!showCreateEventForm)}>
+            {showCreateEventForm ? "Fermer" : "Créer un Événement"}
+          </Button>
+          <Button onClick={handleLogout}>Se déconnecter</Button>
+        </div>
       </Header>
 
       {showCreateEventForm && (
