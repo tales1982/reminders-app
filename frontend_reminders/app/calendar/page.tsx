@@ -164,7 +164,7 @@ const CalendarPage = () => {
         {event.title}{" "}
         {isPast && (
           <span style={{ fontSize: "0.8rem", color: "#4caf50" }}>
-            ✅ já aconteceu
+            ✅ C&apos;est arrivé
           </span>
         )}
       </span>
