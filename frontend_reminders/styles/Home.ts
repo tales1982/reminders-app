@@ -99,3 +99,36 @@ export const Button = styled.button<{ variant?: "primary" | "secondary" }>`
     padding: 0.6rem 1.2rem;
   }
 `;
+
+
+export const AlertBox = styled.div`
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+  font-size: 0.95rem;
+  text-align: left;
+  max-width: 460px;
+  width: 100%;
+
+  strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #b45309;
+    font-weight: 600;
+  }
+
+  code {
+    background: #fde68a;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+    padding: 0.85rem 1rem;
+  }
+`;

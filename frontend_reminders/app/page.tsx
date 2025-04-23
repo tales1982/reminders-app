@@ -12,6 +12,7 @@ import {
   Status,
   Actions,
   Button,
+  AlertBox,
 } from "@/styles/Home";
 
 export default function Home() {
@@ -31,6 +32,15 @@ export default function Home() {
           Organisez vos événements avec des rappels pour <strong>Email</strong>{" "}
           e <strong>WhatsApp</strong>.
         </Subtitle>
+        <AlertBox>
+  <strong>📌 Pour recevoir des notifications WhatsApp :</strong>
+  Avant tout, vous devez activer votre numéro auprès du service CallMeBot.
+  <br /><br />
+  Envoyez le message <code>/start</code> au numéro :<br />
+  <strong>+34 684 73 40 44</strong>
+  <br /><br />
+  Après cela, vous serez autorisé à recevoir des rappels via WhatsApp.
+</AlertBox>
 
         {isLoggedIn ? (
           <>
