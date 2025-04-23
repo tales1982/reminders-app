@@ -28,6 +28,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
+  const [calendarKey, setCalendarKey] = useState(0);
 
   useEffect(() => {
     setCurrentDate(new Date());
@@ -66,14 +67,11 @@ const CalendarPage = () => {
       .then((data) => {
         const formatted = data.map((event: any) => {
           const date = new Date(event.datetime);
-          const localDate = new Date(
-            date.getTime() + date.getTimezoneOffset() * 60000
-          );
           return {
             id: event.id,
             title: event.title,
-            start: localDate,
-            end: localDate,
+            start: date,
+            end: date,
             notifyBefore: event.notifyBefore,
             notifyEmail: event.notifyEmail,
             notifyWhats: event.notifyWhats,
@@ -94,7 +92,7 @@ const CalendarPage = () => {
     window.location.href = "/login"; // Redireciona
   };
 
-  const handleCreateEvent = async (event: React.FormEvent) => {
+  const handleSubmitEvent = async (event: React.FormEvent) => {
     event.preventDefault();
     const selectedDate = new Date(newEvent.datetime);
     const now = new Date();
@@ -105,28 +103,58 @@ const CalendarPage = () => {
     }
 
     const token = localStorage.getItem("token");
-    const response = await fetch(`${apiUrl}/api/events`, {
-      method: "POST",
+
+    const payload = {
+      ...newEvent,
+      datetime: new Date(newEvent.datetime).toISOString(),
+    };
+
+    const method = editingEvent ? "PUT" : "POST";
+    const endpoint = editingEvent
+      ? `${apiUrl}/api/events/${editingEvent.id}`
+      : `${apiUrl}/api/events`;
+
+    const response = await fetch(endpoint, {
+      method,
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        ...newEvent,
-        datetime: new Date(newEvent.datetime).toISOString(), // garante envio como ISO UTC
-      }),
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
-    setEvents([
-      ...events,
-      {
-        id: data.id,
-        title: data.title,
-        start: new Date(data.datetime),
-        end: new Date(data.datetime),
-      },
-    ]);
+
+    if (editingEvent) {
+      // Atualizar o evento na lista
+      setEvents((prev) =>
+        prev.map((evt) =>
+          evt.id === editingEvent.id
+            ? {
+                ...evt,
+                title: data.title,
+                start: new Date(data.datetime),
+                end: new Date(data.datetime),
+                notifyBefore: data.notifyBefore,
+                notifyEmail: data.notifyEmail,
+                notifyWhats: data.notifyWhats,
+              }
+            : evt
+        )
+      );
+    } else {
+      // Adicionar novo evento
+      setEvents([
+        ...events,
+        {
+          id: data.id,
+          title: data.title,
+          start: new Date(data.datetime),
+          end: new Date(data.datetime),
+        },
+      ]);
+    }
+
     setShowCreateEventForm(false);
     setNewEvent({
       title: "",
@@ -135,28 +163,22 @@ const CalendarPage = () => {
       notifyEmail: false,
       notifyWhats: false,
     });
-  };
-
-  const handleDelete = () => {
-    if (!selectedEvent?.id) return;
-
-    const token = localStorage.getItem("token");
-    fetch(`${apiUrl}/api/events/${selectedEvent.id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(() => {
-        setEvents(events.filter((event) => event.id !== selectedEvent.id));
-        setSelectedEvent(null);
-      })
-      .catch((err) => console.error("Erreur en excluant l'événement:", err));
+    setEditingEvent(null);
+    setCalendarKey((prev) => prev + 1);
+    setTimeout(() => window.location.reload(), 200); // pequeno delay só pra UX ficar mais suave
   };
 
   const handleEdit = () => {
     if (selectedEvent) {
       setEditingEvent(selectedEvent);
+      setNewEvent({
+        title: selectedEvent.title,
+        datetime: selectedEvent.start.toISOString(),
+        notifyBefore: selectedEvent.notifyBefore ?? 30,
+        notifyEmail: selectedEvent.notifyEmail ?? false,
+        notifyWhats: selectedEvent.notifyWhats ?? false,
+      });
+      setShowCreateEventForm(true);
       setSelectedEvent(null);
     }
   };
@@ -176,6 +198,27 @@ const CalendarPage = () => {
     );
   };
 
+  const handleDelete = () => {
+    if (!selectedEvent?.id) return;
+
+    const token = localStorage.getItem("token");
+
+    fetch(`${apiUrl}/api/events/${selectedEvent.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(() => {
+        setEvents(events.filter((event) => event.id !== selectedEvent.id));
+        setSelectedEvent(null);
+      })
+      .catch((err) => {
+        console.error("Erreur en excluant l'événement:", err);
+        alert("Erreur lors de la suppression de l'événement.");
+      });
+  };
+
   return (
     <Container>
       <Header>
@@ -189,7 +232,7 @@ const CalendarPage = () => {
       </Header>
 
       {showCreateEventForm && (
-        <FormWrapper onSubmit={handleCreateEvent}>
+        <FormWrapper onSubmit={handleSubmitEvent}>
           <Label>
             Titre de l&apos;Événement :
             <Input
@@ -288,6 +331,7 @@ const CalendarPage = () => {
       {currentDate && (
         <CalendarWrapper>
           <Calendar
+            key={calendarKey} // <--- aqui
             localizer={localizer}
             events={events}
             date={currentDate}
