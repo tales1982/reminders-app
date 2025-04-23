@@ -3,21 +3,22 @@ import { prisma } from "../lib/prisma"; // Prisma Client
 import { sendEmail } from "../utils/sendEmail";
 import { sendWhatsApp } from "../utils/sendWhatsApp";
 
+
 // Roda a cada minuto
 cron.schedule("* * * * *", async () => {
   const now = new Date();
-  const past = new Date(now.getTime() - 30 * 1000);        // Tolerância para atrasos
-  const upcoming = new Date(now.getTime() + 90 * 1000);    // Próximos 90 segundos
+  const from = now;
+  const to = new Date(now.getTime() + 60 * 60 * 1000); // Procura eventos até 1 hora no futuro
 
-  console.log(`🔍 Verificando eventos entre ${past.toISOString()} e ${upcoming.toISOString()}`);
+  console.log(`🔍 Verificando eventos entre ${from.toISOString()} e ${to.toISOString()}`);
 
   try {
     const events = await prisma.event.findMany({
       where: {
         wasNotified: false,
         datetime: {
-          gte: past,
-          lte: upcoming,
+          gte: from,
+          lte: to,
         },
       },
       include: {
@@ -64,3 +65,4 @@ cron.schedule("* * * * *", async () => {
     console.error("❌ Erro ao buscar eventos:", error);
   }
 });
+
