@@ -78,3 +78,13 @@ export const ErrorText = styled.p`
   text-align: center;
   font-size: 0.9rem;
 `;
+
+
+export const InfoText = styled.p`
+  font-size: 0.9rem;
+  color: #444;
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-left: 4px solid #0070f3;
+  margin-bottom: 1rem;
+`;
