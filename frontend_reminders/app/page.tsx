@@ -3,7 +3,16 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/Footer";
-import "./home.css";
+
+import {
+  Container,
+  Card,
+  Title,
+  Subtitle,
+  Status,
+  Actions,
+  Button,
+} from "@/styles/Home";
 
 export default function Home() {
   const router = useRouter();
@@ -15,27 +24,38 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="home-container">
-      <div className="home-card">
-        <h1 className="home-title">🧠 Reminders App</h1>
-        <p className="home-subtitle">
-          Organisez vos événements avec des rappels pour <strong>Email</strong> e <strong>WhatsApp</strong>.
-        </p>
+    <Container>
+      <Card>
+        <Title>🧠 Reminders App</Title>
+        <Subtitle>
+          Organisez vos événements avec des rappels pour <strong>Email</strong>{" "}
+          e <strong>WhatsApp</strong>.
+        </Subtitle>
 
         {isLoggedIn ? (
           <>
-            <p className="home-status logged">✅ Vous êtes connecté!</p>
-            <button className="home-button primary" onClick={() => router.push("/calendar")}>Aller au calendrier 📅</button>
+            <Status $logged>✅ Vous êtes connecté!</Status>
+
+            <Button variant="primary" onClick={() => router.push("/calendar")}>
+              Aller au calendrier 📅
+            </Button>
           </>
         ) : (
-          <div className="home-actions">
-            <p className="home-status not-logged">🔐 Vous n&apos;êtes pas encore connecté.</p>
-            <button className="home-button primary" onClick={() => router.push("/login")}>Se connecter</button>
-            <button className="home-button secondary" onClick={() => router.push("/register")}>Créer un compte</button>
-          </div>
+          <Actions>
+            <Status>🔐 Vous n&apos;êtes pas encore connecté.</Status>
+            <Button variant="primary" onClick={() => router.push("/login")}>
+              Se connecter
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => router.push("/register")}
+            >
+              Créer un compte
+            </Button>
+          </Actions>
         )}
-      </div>
-      <Footer/>
-    </main>
+      </Card>
+      <Footer />
+    </Container>
   );
 }
