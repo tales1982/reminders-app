@@ -12,6 +12,7 @@ import {
   Button,
   ErrorText,
 } from './styles';
+import Footer from '@/components/Footer';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -63,6 +64,7 @@ const LoginPage = () => {
           {error && <ErrorText>{error}</ErrorText>}
         </StyledForm>
       </FormWrapper>
+      <Footer/>
     </Container>
   );
 };

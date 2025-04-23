@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/Footer";
 import "./home.css";
 
 export default function Home() {
@@ -28,12 +29,13 @@ export default function Home() {
           </>
         ) : (
           <div className="home-actions">
-            <p className="home-status not-logged">🔐 Vous n'êtes pas encore connecté.</p>
+            <p className="home-status not-logged">🔐 Vous n&apos;êtes pas encore connecté.</p>
             <button className="home-button primary" onClick={() => router.push("/login")}>Se connecter</button>
             <button className="home-button secondary" onClick={() => router.push("/register")}>Créer un compte</button>
           </div>
         )}
       </div>
+      <Footer/>
     </main>
   );
 }

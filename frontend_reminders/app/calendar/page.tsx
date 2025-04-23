@@ -10,7 +10,7 @@ import { EventModal } from "../../components/Modal";
 import type { View } from "react-big-calendar";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import Footer from "@/components/Footer";
 
 import {
   CalendarWrapper,
@@ -54,7 +54,7 @@ const CalendarPage = () => {
     setHasMounted(true);
 
     const token = localStorage.getItem("token");
-    console.log("Token:", token);
+
     if (!token) return;
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events`, {
@@ -195,28 +195,28 @@ const CalendarPage = () => {
           </Label>
 
           <Label>
-  Date et Heure :
-  <div style={{ marginTop: "0.5rem" }}>
-    <DatePicker
-      selected={newEvent.datetime ? new Date(newEvent.datetime) : null}
-      onChange={(date) =>
-        setNewEvent({
-          ...newEvent,
-          datetime: date ? date.toISOString() : "",
-        })
-      }
-      dateFormat="dd/MM/yyyy HH:mm"
-      showTimeSelect
-      timeFormat="HH:mm"
-      timeIntervals={15}
-      timeCaption="Heure"
-      placeholderText="Sélectionnez la date et l'heure"
-      className="custom-datepicker" // você pode adicionar estilos aqui
-    />
-  </div>
-</Label>
-
-
+            Date et Heure :
+            <div style={{ marginTop: "0.5rem" }}>
+              <DatePicker
+                selected={
+                  newEvent.datetime ? new Date(newEvent.datetime) : null
+                }
+                onChange={(date) =>
+                  setNewEvent({
+                    ...newEvent,
+                    datetime: date ? date.toISOString() : "",
+                  })
+                }
+                dateFormat="dd/MM/yyyy HH:mm"
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="Heure"
+                placeholderText="Sélectionnez la date et l'heure"
+                className="custom-datepicker" // você pode adicionar estilos aqui
+              />
+            </div>
+          </Label>
           <Label>
             Alerte avant (minutes) :
             <Input
@@ -258,7 +258,6 @@ const CalendarPage = () => {
               </label>
             </div>
           </Label>
-
           <FormButtonGroup>
             <Button type="submit">Enregistrer</Button>
             <Button type="button" onClick={() => setShowCreateEventForm(false)}>
@@ -297,7 +296,6 @@ const CalendarPage = () => {
           />
         </CalendarWrapper>
       )}
-
       {selectedEvent && (
         <EventModal
           event={selectedEvent}
@@ -307,6 +305,7 @@ const CalendarPage = () => {
           onDelete={handleDelete}
         />
       )}
+      <Footer />
     </Container>
   );
 };

@@ -26,3 +26,8 @@ body {
   color: #333;
   background-color: #f5f7fa;
 }
+
+.home-container{
+  display: flex;
+  flex-direction: column;
+}

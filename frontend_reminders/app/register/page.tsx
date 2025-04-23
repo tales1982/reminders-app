@@ -13,6 +13,7 @@ import {
 } from './styles';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import Footer from '@/components/Footer';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -92,6 +93,7 @@ const RegisterPage = () => {
           {error && <ErrorText>{error}</ErrorText>}
         </StyledForm>
       </FormWrapper>
+      <Footer/>
     </Container>
   );
 };
