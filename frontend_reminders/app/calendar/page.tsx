@@ -83,7 +83,7 @@ const CalendarPage = () => {
         setEvents(formatted);
       })
       .catch((err) => {
-        console.error("Erro ao carregar eventos:", err);
+        console.error("Erreur lors de la transport d'événements:", err);
       });
   }, []);
 
@@ -95,7 +95,7 @@ const CalendarPage = () => {
     const now = new Date();
 
     if (selectedDate <= now) {
-      alert("⛔ Não é possível adicionar eventos no passado.");
+      alert("⛔ Il n'est pas possible d'ajouter des événements dans le passé.");
       return;
     }
 
@@ -146,7 +146,7 @@ const CalendarPage = () => {
         setEvents(events.filter((event) => event.id !== selectedEvent.id));
         setSelectedEvent(null);
       })
-      .catch((err) => console.error("Erro ao excluir evento:", err));
+      .catch((err) => console.error("Erreur en excluant l'événement:", err));
   };
 
   const handleEdit = () => {
