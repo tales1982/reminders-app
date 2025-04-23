@@ -93,7 +93,6 @@ const CalendarPage = () => {
     localStorage.clear(); // Limpa tudo
     window.location.href = "/login"; // Redireciona
   };
-  
 
   const handleCreateEvent = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -117,7 +116,6 @@ const CalendarPage = () => {
         datetime: new Date(newEvent.datetime).toISOString(), // garante envio como ISO UTC
       }),
     });
-
 
     const data = await response.json();
     setEvents([
@@ -228,19 +226,29 @@ const CalendarPage = () => {
             </div>
           </Label>
           <Label>
-            Alerte avant (minutes) :
-            <Input
-              type="number"
-              min={1}
+            Alerte avant :
+            <select
               value={newEvent.notifyBefore}
               onChange={(e) =>
                 setNewEvent({
                   ...newEvent,
-                  notifyBefore: Number(e.target.value),
+                  notifyBefore: parseInt(e.target.value),
                 })
               }
-              required
-            />
+              style={{
+                marginTop: "0.5rem",
+                padding: "0.4rem",
+                borderRadius: "4px",
+              }}
+            >
+              <option value={30}>30 minutes avant</option>
+              <option value={60}>1 heure avant</option>
+              <option value={180}>3 heures avant</option>
+              <option value={360}>6 heures avant</option>
+              <option value={720}>12 heures avant</option>
+              <option value={1440}>1 jour avant</option>
+              <option value={2880}>2 jours avant</option>
+            </select>
           </Label>
 
           <Label>
