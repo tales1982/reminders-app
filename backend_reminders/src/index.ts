@@ -16,21 +16,24 @@ const allowedOrigins = [
   'https://reminders-app.online'
 ];
 
+// src/index.ts
+
 app.use(cors({
   origin: (origin, callback) => {
+    console.log('➡️  Requisição vinda de origin:', origin);
     if (!origin) return callback(null, true);
-    // libera domínio oficial + .vercel.app de preview
     if (
       allowedOrigins.includes(origin) ||
       /\.vercel\.app$/.test(origin)
     ) {
       return callback(null, true);
     }
-    callback(new Error('Not allowed by CORS'));
+    callback(new Error(`Not allowed by CORS — origin ${origin}`));
   },
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
 }));
+
 
 
 
