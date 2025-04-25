@@ -10,31 +10,34 @@ dotenv.config();
 const app = express();
 const PORT = parseInt(process.env.PORT || '4000', 10);
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://reminders-app-sage.vercel.app',  // sem barra no final
-  'https://reminders-app.online'
-];
-
 // src/index.ts
+const allowedOrigins: (string|RegExp)[] = [
+  'http://localhost:3000',
+  'https://reminders-app.online',
+  'https://reminders-app-sage.vercel.app',
+  // regex que cobre qualquer subdomínio *.vercel.app
+  /^https?:\/\/[A-Za-z0-9-]+\.vercel\.app$/
+];
 
 app.use(cors({
   origin: (origin, callback) => {
-    console.log('➡️  Requisição vinda de origin:', origin);
+    console.log('CORS origin:', origin);
     if (!origin) return callback(null, true);
-    if (
-      allowedOrigins.includes(origin) ||
-      /\.vercel\.app$/.test(origin)
-    ) {
+    if (allowedOrigins.some(o =>
+      typeof o === 'string'
+        ? o === origin
+        : o.test(origin)
+    )) {
       return callback(null, true);
     }
-    callback(new Error(`Not allowed by CORS — origin ${origin}`));
+    return callback(new Error(`Not allowed by CORS — ${origin}`));
   },
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
 }));
 
-
+// garante que o cors trate todas as options pré-flight
+app.options('*', cors());
 
 
 app.use(express.json());
