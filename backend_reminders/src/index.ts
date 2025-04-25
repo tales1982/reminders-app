@@ -14,28 +14,16 @@ const PORT = parseInt(process.env.PORT || '4000', 10);
 const allowedOrigins: (string|RegExp)[] = [
   'http://localhost:3000',
   'https://reminders-app.online',
-  'https://reminders-app-sage.vercel.app',
-  // regex que cobre qualquer subdomínio *.vercel.app
+  // regex que cobre QUALQUER preview no vercel.app
   /^https?:\/\/[A-Za-z0-9-]+\.vercel\.app$/
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    console.log('CORS origin:', origin);
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.some(o =>
-      typeof o === 'string'
-        ? o === origin
-        : o.test(origin)
-    )) {
-      return callback(null, true);
-    }
-    return callback(new Error(`Not allowed by CORS — ${origin}`));
-  },
+  origin: allowedOrigins,
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
+  optionsSuccessStatus: 204 // bom pra clientes antigos
 }));
-
 // garante que o cors trate todas as options pré-flight
 app.options('*', cors());
 
