@@ -11,7 +11,7 @@ const PORT = parseInt(process.env.PORT || '4000', 10);
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://reminders-app-sage.vercel.app/',
+  'https://reminders-app-sage.vercel.app',
 ];
 
 app.use(cors({
