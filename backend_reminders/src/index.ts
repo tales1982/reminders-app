@@ -11,20 +11,26 @@ const PORT = parseInt(process.env.PORT || '4000', 10);
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://reminders-app-sage.vercel.app/',
-  'https://reminders-app.online', // <--- Adicione esta linha
+  'https://reminders-app-sage.vercel.app',  // sem barra no final
+  'https://reminders-app.online'
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    // libera domínio oficial + .vercel.app de preview
+    if (
+      allowedOrigins.includes(origin) ||
+      /\.vercel\.app$/.test(origin)
+    ) {
+      return callback(null, true);
     }
+    callback(new Error('Not allowed by CORS'));
   },
-  credentials: true,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
 }));
+
 
 
 app.use(express.json());
