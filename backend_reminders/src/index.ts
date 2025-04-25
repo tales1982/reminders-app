@@ -7,11 +7,24 @@ import eventRoutes from './routes/event.routes';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = parseInt(process.env.PORT || '4000', 10);
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://seu-frontend.vercel.app',
+];
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*', // ✅ mais seguro
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 }));
+
 
 app.use(express.json());
 
@@ -24,6 +37,7 @@ app.get('/', (req, res) => {
 
 import './jobs/eventReminderJob';
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Servidor rodando em http://0.0.0.0:${PORT}`);
 });
+

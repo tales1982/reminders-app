@@ -5,8 +5,9 @@ const isDev = process.env.NODE_ENV === 'development';
 const nextConfig = {
   reactStrictMode: true,
   compiler: {
-    styledComponents: true, // habilita suporte a SSR e nomes de classes
+    styledComponents: true,
   },
+  output: 'export' as const, // ⬅️ Adicione essa linha aqui
 };
 
 const withPWAModule = withPWA({
@@ -17,3 +18,4 @@ const withPWAModule = withPWA({
 });
 
 export default withPWAModule(nextConfig);
+

@@ -21,8 +21,27 @@ export default function Home() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    if (!token) return;
+  
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      })
+      .catch((err) => {
+        console.error('Erro ao verificar token:', err);
+        setIsLoggedIn(false);
+      });
   }, []);
+  
 
   return (
     <Container>
