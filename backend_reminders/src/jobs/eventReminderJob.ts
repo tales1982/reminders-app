@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import { prisma } from "../lib/prisma";
 import { sendEmail } from "../utils/sendEmail";
-import { sendWhatsApp } from "../utils/sendWhatsApp";
+// import { sendWhatsApp } from "../utils/sendWhatsApp"; // removido, já não usamos
 
 cron.schedule("* * * * *", async () => {
   const now = new Date();
@@ -12,7 +12,7 @@ cron.schedule("* * * * *", async () => {
   try {
     const events = await prisma.event.findMany({
       where: {
-        wasNotified: false,               // ← só os não enviados
+        wasNotified: false,
         datetime: { gte: now, lte: to },
       },
       include: { user: true },
@@ -30,10 +30,15 @@ cron.schedule("* * * * *", async () => {
         console.log(`🔔 Notificando evento: ${event.title}`);
 
         try {
-          await sendEmail(event.title, event.user.email);
+          // agora enviamos título + descrição no e-mail
+          await sendEmail(
+            event.title,
+            event.description ?? "(sem descrição)",
+            event.user.email
+          );
           console.log(`📧 Email enviado para ${event.user.email}`);
           
-          // ← aqui marcamos como notificado
+          // marcamos como notificado para não reenviar
           await prisma.event.update({
             where: { id: event.id },
             data:  { wasNotified: true },
@@ -48,4 +53,3 @@ cron.schedule("* * * * *", async () => {
     console.error("❌ Erro ao buscar eventos:", error);
   }
 });
-
