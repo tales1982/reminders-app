@@ -2,14 +2,12 @@
 // ✅ Tipo dos eventos para o calendário
 // types/calendar.ts
 
-export interface Event {
-  id: number | string; // ✅ adicione isso
+export interface CalendarEvent {
+  id: number;
   title: string;
+  description: string;    // ← agora existe
   start: Date;
   end: Date;
-  allDay?: boolean;
-  resource?: any;
-  notifyBefore?: number;
-  notifyEmail?: boolean;
-  notifyWhats?: boolean;
+  notifyBefore: number;   // ← agora existe
+  notifyEmail: boolean;   // ← agora existe
 }

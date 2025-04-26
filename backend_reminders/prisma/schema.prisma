@@ -14,7 +14,7 @@ model User {
   name      String
   surname   String
   city      String
-  whatsapp  String?  // ← novo campo para o número de WhatsApp
+  timezone  String   @default("UTC")
   events    Event[]
 }
 
@@ -27,8 +27,7 @@ model Event {
   datetime     DateTime
   notifyBefore Int
   notifyEmail  Boolean
-  notifyWhats  Boolean
-  wasNotified  Boolean  @default(false)
   userId       Int
+  wasNotified Boolean @default(false)
   user         User     @relation(fields: [userId], references: [id])
 }

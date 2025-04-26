@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import styled from "styled-components";
-import { Event } from "../types/calendar";
+import { CalendarEvent } from "../types/calendar";
 import moment from 'moment';
 
 
 type Props = {
-  event: Event;
+  event: CalendarEvent;
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -58,6 +58,7 @@ const Button = styled.button`
 `;
 
 export const EventModal = ({ event, onClose, onEdit, onDelete }: Props) => {
+  
   return (
     <Overlay onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>

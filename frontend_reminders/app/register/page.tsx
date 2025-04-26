@@ -1,7 +1,6 @@
 "use client";
 import { useState } from 'react';
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-const isValidPhone = (phone: string) => /^\+?[0-9]{10,15}$/.test(phone);
 import axios from 'axios';
 import {
   Container,
@@ -22,7 +21,6 @@ const RegisterPage = () => {
   const [surname, setSurname] = useState('');
   const [city, setCity] = useState('');
   const [email, setEmail] = useState('');
-  const [whatsapp, setWhatsapp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +29,7 @@ const RegisterPage = () => {
     event.preventDefault();
   
     // Verifica campos básicos
-    if (!name || !surname || !city || !email || !whatsapp || !password || !confirmPassword) {
+    if (!name || !surname || !city || !email || !password || !confirmPassword) {
       setError("Tous les champs sont obligatoires.");
       return;
     }
@@ -41,29 +39,26 @@ const RegisterPage = () => {
       return;
     }
   
-    if (!isValidPhone(whatsapp)) {
-      setError("Veuillez entrer un numéro WhatsApp valide (ex: +352661234567).");
-      return;
-    }
-  
     if (password !== confirmPassword) {
       setError("Les mots de passe ne correspondent pas.");
       return;
     }
   
     try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
       const response = await axios.post(`${apiUrl}/api/auth/register`, {
         name,
         surname,
         city,
         email,
         password,
-        whatsapp,
+        timezone
       });
 
       console.log(response.data);
       // Alerta para ativar número no CallMeBot
-      alert("Inscription réussie ! Pour activer votre numéro WhatsApp, veuillez envoyer un message contenant le mot '/start' à CallMeBot au numéro suivant : +34 684 73 40 44 via WhatsApp.");
+      //alert("Inscription réussie ! Pour activer votre numéro WhatsApp, veuillez envoyer un message contenant le mot '/start' à CallMeBot au numéro suivant : +34 684 73 40 44 via WhatsApp.");
       window.location.href = '/login';
     } catch (error) {
       setError("Erreur lors de l'inscription.");
@@ -92,16 +87,6 @@ const RegisterPage = () => {
           <Label>
             Adresse e-mail :
             <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          </Label>
-          <Label>
-            Numéro WhatsApp :
-            <Input
-              type="tel"
-              placeholder="ex : 352661234567"
-              value={whatsapp}
-              onChange={(e) => setWhatsapp(e.target.value)}
-              required
-            />
           </Label>
           <Label>
             Mot de passe :

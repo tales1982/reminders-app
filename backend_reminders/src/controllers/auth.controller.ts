@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || "secretao";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const { name, surname, city, email, password, whatsapp } = req.body; // ← adiciona whatsapp
+  const { name, surname, city, email, password } = req.body;
 
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -24,7 +24,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         city,
         email,
         password: hashedPassword,
-        whatsapp, // ← salva no banco
       },
     });
 
@@ -32,7 +31,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 🧑 Nome: ${name} ${surname}
 📍 Cidade: ${city}
 📧 Email: ${email}
-📱 WhatsApp: ${whatsapp}
 🆔 ID do usuário: ${user.id}
 `);
 

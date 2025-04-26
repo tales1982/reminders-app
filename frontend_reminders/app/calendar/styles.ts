@@ -150,3 +150,12 @@ export const FormButtonGroup = styled.div`
   gap: 1rem;
   margin-top: 1rem;
 `;
+
+
+export const Textarea = styled.textarea`
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+`;

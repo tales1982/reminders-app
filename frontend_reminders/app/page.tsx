@@ -12,7 +12,6 @@ import {
   Status,
   Actions,
   Button,
-  AlertBox,
 } from "@/styles/Home";
 
 export default function Home() {
@@ -21,45 +20,16 @@ export default function Home() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
-  
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-        }
-      })
-      .catch((err) => {
-        console.error('Erro ao verificar token:', err);
-        setIsLoggedIn(false);
-      });
+    setIsLoggedIn(!!token);
   }, []);
-  
 
   return (
     <Container>
       <Card>
         <Title>🧠 Reminders App</Title>
         <Subtitle>
-          Organisez vos événements avec des rappels pour <strong>Email</strong>{" "}
-          e <strong>WhatsApp</strong>.
+          Organisez vos événements avec des rappels pour <strong>Email.</strong>{" "}
         </Subtitle>
-        <AlertBox>
-  <strong>📌 Pour recevoir des notifications WhatsApp :</strong>
-  Avant tout, vous devez activer votre numéro auprès du service CallMeBot.
-  <br /><br />
-  Envoyez le message <code>/start</code> au numéro :<br />
-  <strong>+34 684 73 40 44</strong>
-  <br /><br />
-  Après cela, vous serez autorisé à recevoir des rappels via WhatsApp.
-</AlertBox>
 
         {isLoggedIn ? (
           <>
