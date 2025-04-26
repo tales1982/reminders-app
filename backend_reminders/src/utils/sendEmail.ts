@@ -7,21 +7,19 @@ export async function sendEmail(
   description: string,
   to: string
 ) {
-  // 1) Cria o transporter usando STARTTLS na porta 587
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false,      // false = STARTTLS (upgrade depois do EHLO)
-    requireTLS: true,   // força TLS
+    port: 465,
+    secure: true,   // SSL direto
     auth: {
-      user: process.env.EMAIL_USER,      // seu usuário Gmail
-      pass: process.env.EMAIL_PASS,      // App Password de 16 chars (sem espaços!)
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
-    connectionTimeout: 10_000,  // 10s
-    greetingTimeout: 5_000,     // 5s
+    connectionTimeout: 10_000,
+    greetingTimeout: 5_000,
   });
 
-  // 2) Opcional: verifique antes se a conexão está ok
+  // Verifica a conexão e autenticação
   await transporter.verify();
 
   const subject = `Lembrete: ${title}`;
