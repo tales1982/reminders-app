@@ -5,41 +5,39 @@ dotenv.config();
 export async function sendEmail(
   title: string,
   description: string,
-  email: string
+  to: string
 ) {
+  // 1) Cria o transporter usando STARTTLS na porta 587
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,      // false = STARTTLS (upgrade depois do EHLO)
+    requireTLS: true,   // força TLS
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.EMAIL_USER,      // seu usuário Gmail
+      pass: process.env.EMAIL_PASS,      // App Password de 16 chars (sem espaços!)
     },
+    connectionTimeout: 10_000,  // 10s
+    greetingTimeout: 5_000,     // 5s
   });
+
+  // 2) Opcional: verifique antes se a conexão está ok
+  await transporter.verify();
 
   const subject = `Lembrete: ${title}`;
   const text = `
-Seu evento "${title}" está para acontecer em breve!
+Evento: ${title}
 
 Descrição:
 ${description}
 
-— 
-Este é um lembrete automático.
-  `.trim();
-
-  const html = `
-    <h2>🔔 Lembrete de Evento</h2>
-    <p><strong>${title}</strong></p>
-    <p>${description}</p>
-    <p>Está prestes a começar!</p>
-    <hr/>
-    <p style="font-size:0.8em;color:#666;">Este é um lembrete automático.</p>
-  `;
+Está prestes a acontecer em breve!
+`.trim();
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
-    to: email,
+    to,
     subject,
     text,
-    html,
   });
 }

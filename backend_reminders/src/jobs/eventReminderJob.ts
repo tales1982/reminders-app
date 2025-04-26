@@ -5,7 +5,7 @@ import { sendEmail } from "../utils/sendEmail";
 
 cron.schedule("* * * * *", async () => {
   const now = new Date();
-  const to  = new Date(now.getTime() + 60 * 60 * 1000);
+  const to = new Date(now.getTime() + 60 * 60 * 1000);
 
   console.log(`🔍 Verificando eventos entre ${now.toISOString()} e ${to.toISOString()}`);
 
@@ -23,33 +23,35 @@ cron.schedule("* * * * *", async () => {
       return;
     }
 
-    await Promise.all(events.map(async (event) => {
-      const diffMinutes = (event.datetime.getTime() - now.getTime()) / 60000;
+    await Promise.all(
+      events.map(async (event) => {
+        const diffMinutes = (event.datetime.getTime() - now.getTime()) / 60000;
 
-      if (diffMinutes <= event.notifyBefore && event.notifyEmail && event.user.email) {
-        console.log(`🔔 Notificando evento: ${event.title}`);
+        if (diffMinutes <= event.notifyBefore && event.notifyEmail && event.user.email) {
+          console.log(`🔔 Notificando evento: ${event.title}`);
 
-        try {
-          // agora enviamos título + descrição no e-mail
-          await sendEmail(
-            event.title,
-            event.description ?? "(sem descrição)",
-            event.user.email
-          );
-          console.log(`📧 Email enviado para ${event.user.email}`);
-          
-          // marcamos como notificado para não reenviar
+          try {
+            await sendEmail(
+              event.title,
+              event.description ?? "(sem descrição)",
+              event.user.email
+            );
+            console.log(`📧 Email enviado para ${event.user.email}`);
+          } catch (err) {
+            console.error(`❌ Erro ao enviar email do evento "${event.title}":`, err);
+            return; // interrompe só este evento
+          }
+
+          // marca como notificado somente após sucesso no envio
           await prisma.event.update({
             where: { id: event.id },
-            data:  { wasNotified: true },
+            data: { wasNotified: true },
           });
           console.log(`✅ Evento "${event.title}" marcado como notificado.`);
-        } catch (err) {
-          console.error(`❌ Erro ao notificar "${event.title}":`, err);
         }
-      }
-    }));
+      })
+    );
   } catch (error) {
     console.error("❌ Erro ao buscar eventos:", error);
   }
-});
+}); // <-- fecha o cron.schedule
