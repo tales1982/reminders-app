@@ -25,7 +25,7 @@ import {
 } from "./styles";
 
 const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-moment.locale("fr");                // <-- définition du locale en français
+moment.locale("fr"); // <-- définition du locale en français
 moment.tz.setDefault(userTimezone);
 const localizer = momentLocalizer(moment);
 
@@ -39,7 +39,9 @@ const CalendarPage = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [showCreateEventForm, setShowCreateEventForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
 
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -72,7 +74,9 @@ const CalendarPage = () => {
         }));
         setEvents(formatted);
       })
-      .catch((err) => console.error("Erreur lors du chargement des événements :", err));
+      .catch((err) =>
+        console.error("Erreur lors du chargement des événements :", err)
+      );
   }, []);
 
   if (!hasMounted) return null;
@@ -214,7 +218,9 @@ const CalendarPage = () => {
             <Input
               type="text"
               value={newEvent.title}
-              onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, title: e.target.value })
+              }
               required
             />
           </Label>
@@ -223,7 +229,9 @@ const CalendarPage = () => {
             Description :
             <Textarea
               value={newEvent.description}
-              onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, description: e.target.value })
+              }
               rows={3}
             />
           </Label>
@@ -232,7 +240,9 @@ const CalendarPage = () => {
             Date et heure :
             <DatePicker
               selected={newEvent.datetime ? new Date(newEvent.datetime) : null}
-              onChange={(d) => setNewEvent({ ...newEvent, datetime: d ? d.toISOString() : "" })}
+              onChange={(d) =>
+                setNewEvent({ ...newEvent, datetime: d ? d.toISOString() : "" })
+              }
               showTimeSelect
               dateFormat="Pp"
             />
@@ -243,13 +253,20 @@ const CalendarPage = () => {
             <select
               value={newEvent.notifyBefore}
               onChange={(e) =>
-                setNewEvent({ ...newEvent, notifyBefore: parseInt(e.target.value, 10) })
+                setNewEvent({
+                  ...newEvent,
+                  notifyBefore: parseInt(e.target.value, 10),
+                })
               }
             >
               <option value={5}>5 min</option>
               <option value={15}>15 min</option>
               <option value={30}>30 min</option>
-              <option value={60}>60 min</option>
+              <option value={60}>1 h</option>
+              <option value={180}>3 h</option>
+              <option value={360}>6 h</option>
+              <option value={720}>12 h</option>
+              <option value={1440}>24 h</option>
             </select>
           </Label>
 
@@ -257,7 +274,9 @@ const CalendarPage = () => {
             <input
               type="checkbox"
               checked={newEvent.notifyEmail}
-              onChange={(e) => setNewEvent({ ...newEvent, notifyEmail: e.target.checked })}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, notifyEmail: e.target.checked })
+              }
             />{" "}
             Notifier par e-mail
           </Label>
