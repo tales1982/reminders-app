@@ -24,14 +24,14 @@ export async function sendEmail(
   // valida conexão antes de enviar
   await transporter.verify();
 
-  const subject = `Lembrete: ${title}`;
+  const subject = `Rappel: ${title}`;
   const text = `
-Evento: ${title}
+Événement: ${title}
 
-Descrição:
+Description:
 ${description}
 
-Está prestes a acontecer em breve!
+C'est sur le point de se produire bientôt!
   `.trim();
 
   await transporter.sendMail({
